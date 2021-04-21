@@ -4,7 +4,7 @@ exports.getCart = (req,res) => {
    
     const id = req.auth.id;
     let sql=`SELECT Items FROM cart WHERE userID = ${id}`;
-   console.log(sql)
+ 
     conn.query(sql,function (error, results, fields) {
         if (error) throw error;
   
@@ -16,8 +16,8 @@ exports.getCart = (req,res) => {
 exports.updateCart = async (req,res) => {
     try {
     const id =  parseInt(req.auth.id);
-   
-    const cart=JSON.stringify(req.body.cart);
+  
+    const cart=req.body.cart;
     let cartFinal=cart.replace(/'/g, "''")
     cartFinal=JSON.stringify(cartFinal)
     let sql=`SELECT * FROM cart WHERE userID = ${id} `;

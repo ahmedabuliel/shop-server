@@ -28,52 +28,29 @@ exports.userById = (req,res,next,id) =>{
 
 exports.signup = async (req,res) => {
    
-  
-       let form = new formidable.IncomingForm();
-       form.keepExtensions = true;
-       let profile_image='';
-       form.uploadDir='./public/uploads'
-       form.parse(req, async (err, fields, files) => { 
-           if (files.imgFile) {
-               if (files.imgFile.size > 1000000) {
-                 return res.status(400).json({
-                   error: 'Image should be less than 1mb in size'
-                 });
-               }
-              const temp=files.imgFile.path.split("\\");
-               profile_image='/'+temp[2];
-            
-               
-            }
-       const valid= userSignupValidator(fields)
-       if(valid.err===true){
-        res.status(400).json({
-            error:valid.errorMsg
-          });
-       }
-        
-            const user=fields;
-            user['role']=0
-            user['profile_image']= profile_image;
-            const hashed_password=   await bcrypt.hash(user.password,10)
-            const sql =`INSERT INTO users(  name, phone, email, password,profile_image,role) VALUES ("${user.name}",${user.phone},"${user.email}","${hashed_password}","${user.profile_image}",0)`
-            conn.query(sql,function (error, results, fields) {
-                if (error && error.errno==1062) return res.status(400).json({error : "Email already exists"})
-                if(results.insertId){   
-                const token = jwt.sign({id:results.insertId}, process.env.JWT_SECRET)
-                res.cookie("t", token, {expire: new Date() + 9999})
-                const {ID, username,name, role, email} = user;
-              
-                return res.json({token, user:{ID, username,name, email,profile_image, role}})   
-                }
-            })    
-        
-        })
+
+         const {name,email,password,phone,profile}=req.body;
+         const hashed_password=   await bcrypt.hash(password,10)
+         req.body['role']=0
+         const sql =`INSERT INTO users(  name, phone, email, password,profile_image,role) VALUES ("${name}",${phone},"${email}","${hashed_password}","${profile}",0)`
+         conn.query(sql,function (error, results, fields) {
+             if (error && error.errno==1062) return res.status(400).json({error : "Email already exists"})
+             if(results.insertId){
+                req.body['ID']= results.insertId;  
+             const token = jwt.sign({id:results.insertId}, process.env.JWT_SECRET)
+             res.cookie("t", token, {expire: new Date() + 9999})
+             const {ID, username,name,profile, role, email} = req.body;
+           
+             return res.json({token, user:{ID, username,name, email,profile, role}})   
+             }
+         })    
      
-   
+    
   
 
-} 
+
+
+}  
 
 exports.signin = async (req,res) => {
         
@@ -155,11 +132,11 @@ exports.getoldProfileImg=async(req,res,next)=>{
         if(results.length!=0){
         let oldProfileImg=results[0].profile_image
         fs.stat(`./public/uploads/${oldProfileImg}`, function (err, stats) {
-            console.log('stats',stats);//here we got all information of file in stats variable
+           
             if(stats.isFile())
             fs.unlinkSync(`./public/uploads/${oldProfileImg}`,function(err){
                  if(err) return console.log(err);
-                 console.log('file deleted successfully');
+              
             });  
          });
         }   
@@ -235,7 +212,7 @@ exports.getAddress = (req,res)=>{
 exports.frogetPassword=(req,res)=>{
    const {email}=req.body
     let sql =`SELECT ID from users WHERE email='${email}' `;
-    console.log(sql)
+  
     conn.query(sql,function (error, results, fields) {
         if(error){res.status(400).send(error)}
         else if(results.length>0){

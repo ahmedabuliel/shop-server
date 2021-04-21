@@ -35,7 +35,7 @@ exports.getVariets = (req,res)=>{
    
       try {
         const { name ,value,chk} = req.body;
-        console.log(chk)
+    
         const sql=`SELECT * FROM variations WHERE varietsName="${name}" AND value="${value}"` ;
         conn.query(sql,function (error, results, fields) {
           if (error ) throw error
@@ -62,7 +62,7 @@ exports.update = async(req,res) => {
  
   try {
     const { name ,value,chk,variId} = req.body;
-    console.log(variId)
+  
     const sql =`UPDATE variations SET varietsName ="${name}",value="${value}" value=${chk} WHERE ID = ${variId}`
 
     conn.query(sql,function (error, results, fields) {

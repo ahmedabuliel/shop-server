@@ -6,5 +6,7 @@ const { requireSignin, isAdmin } = require('../../controllers/user');
 
 router.get('/getImages',getImages);//router that call function to get all images
 router.post('/uploadimages',requireSignin,isAdmin,uploadimages);
+router.post('/uploadprofile',uploadimages);
 router.post('/removeimages',requireSignin,isAdmin,removeimages);
+router.post('/removeprofile',removeimages);
 module.exports = router; 

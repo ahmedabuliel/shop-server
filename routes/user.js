@@ -1,13 +1,13 @@
 const express = require('express')
 const router = express.Router()
 
-const {userSigninValidator} = require('../validator')
+const {userSigninValidator,userSignupValidator} = require('../validator')
 
 const {signup, signin,signout,requireSignin,userById,
     updateAddress ,getoldProfileImg,auth,updateProfile,getAddress,frogetPassword,updatePassword} = require('../controllers/user')
 
 
-router.post('/signup',signup)
+router.post('/signup',userSignupValidator,signup)
 router.post('/signin',userSigninValidator,signin)
 router.get('/signout',signout)
 router.post('/forgetpassword',frogetPassword)

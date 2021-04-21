@@ -12,7 +12,8 @@ const {getProducts,
     setWishlishProduct,
     getProductWishlist ,
     getListWishlist,
-    deleteListWishlist
+    deleteListWishlist,
+    getRelatedProducts
 } = require('../../controllers/shop/Products')
 const {requireSignin,isAdmin} = require ('../../controllers/user')
 
@@ -23,6 +24,7 @@ router.get('/getProducts/',getProducts);
 router.get('/getProducts/:catID',getProducts);
 router.get('/getProduct/:ID',getProduct);
 router.get('/getProductImages/:ID',getProductImages);
+router.post('/getRelatedProducts',getRelatedProducts);
 router.get('/getTopProducts',getTopProducts);
 router.post('/getSearchProducts',getSearchProducts);
 router.put("/product/star/:productId", requireSignin, productStar);

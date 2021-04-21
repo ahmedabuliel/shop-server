@@ -1,6 +1,5 @@
 const conn= require('../../DB')
-const formidable = require('formidable');
-const fs = require('fs');
+
 
 exports.create =(req,res)=>{
 
@@ -24,7 +23,7 @@ res.status(200).json({
 });
 }
 const insertVarietsproduct=(productID,varietsSelected)=>{
- console.log( varietsSelected)
+
  try{
     varietsSelected && varietsSelected.forEach(vari=>{
   let sql='';
@@ -143,7 +142,10 @@ exports.getProducts =(req,res)=>{
   
   let sql = `SELECT products.* , images.Filename,categories.Name AS CategoryName FROM products INNER JOIN categories ON categories.ID = products.Category INNER JOIN images ON images.ProductID=products.ID WHERE images.cover=1  ORDER BY products.Title DESC`
   if(req.params.catID)
-     sql = `SELECT products.* , images.Filename,categories.Name AS CategoryName FROM products INNER JOIN categories ON categories.ID = products.Category INNER JOIN images ON images.ProductID=products.ID WHERE images.cover=1 AND products.Category=${req.params.catID} ORDER BY products.Title DESC `
+     sql = `SELECT products.* , images.Filename,categories.Name AS CategoryName 
+     FROM products INNER JOIN categories ON categories.ID = products.Category
+      INNER JOIN images ON images.ProductID=products.ID WHERE images.cover=1 AND 
+      products.Category=${req.params.catID} ORDER BY products.Title DESC `
  
   
      conn.query(sql,function (error, results, fields) {
@@ -165,8 +167,9 @@ exports.getProduct =(req,res)=>{
 });  
 }
 exports.getTopProducts =(req,res)=>{
-  const {ID} =req.params
-  let sql = `SELECT products.* , images.Filename FROM products INNER JOIN images ON images.ProductID=products.ID WHERE images.cover=1 AND topSale=1`
+  
+  let sql = `SELECT products.* , images.Filename FROM products INNER JOIN images ON 
+  images.ProductID=products.ID WHERE images.cover=1 AND topSale=1`
 
    conn.query(sql,function (error, results, fields) {
     if (error) throw error;
@@ -198,6 +201,25 @@ exports.getSearchProducts =(req,res)=>{
     res.send(results);
 
 });  
+}
+
+exports.getRelatedProducts=(req,res)=>{
+  
+  let {productID,catID}=req.body
+  
+  
+  let sql=`SELECT products.* , 
+  images.Filename,categories.Name AS CategoryName FROM products INNER JOIN categories ON categories.ID = products.Category INNER JOIN images ON images.ProductID=products.ID WHERE images.cover=1 
+  AND products.Category=${catID} 
+  AND NOT products.ID =${productID} LIMIT 3`
+
+  conn.query(sql,function (error, results, fields) {
+    if (error) throw error;
+   
+    res.send(results);
+
+});  
+
 }
 exports.productStar =  (req, res) => {
   let productID = req.params.productId;

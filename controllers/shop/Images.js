@@ -23,7 +23,7 @@ exports.getImages=(req,res)=>{
       return res.json(`/${name}`)   
     }
     exports.removeimages= async (req, res) => {
-   const {url }=req.body
+   
    fs.stat(`./public/uploads/${url}`, function (err, stats) {
         console.log('stats',stats);//here we got all information of file in stats variable
         if(stats.isFile())

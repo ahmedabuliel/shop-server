@@ -31,7 +31,7 @@ exports.getCheckOut = (req,res) => {
         const items=JSON.stringify(results[0] )
   
       const orderItems= JSON.parse( items.replace(/\\/g,'').replace('{"Items":""','').replace('""}',''))
-      console.log(orderItems)
+  
     const totalOrder=totalPrice(orderItems);
     const tax=totalTax(orderItems);
     res.send({totalOrder, orderItems,tax})
@@ -39,7 +39,7 @@ exports.getCheckOut = (req,res) => {
 }
 
 exports.createOrder=(req,res)=>{
-    console.log(req.body)
+  
     const {payment,total,cart} =req.body;
  
     orderID=shortid.generate()
