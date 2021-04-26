@@ -45,10 +45,11 @@ exports.getVariets = (req,res)=>{
           const sql =`INSERT INTO variations(	varietsName,value,color) VALUES ("${name}","${value}",${chk})`
           conn.query(sql,function (error, results, fields) {
             if (error && error.errno==1062) return res.status(400).json({error : "Variet already exists"})
-         
+            console.log(sql)
             res.send(results);
     
         }); 
+      
          }
   
       });
